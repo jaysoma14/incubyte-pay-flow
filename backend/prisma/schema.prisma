@@ -25,6 +25,20 @@ model User {
   createdAt    DateTime         @default(now())
   updatedAt    DateTime         @updatedAt
   salaryChanges SalaryAuditLog[]
+  refreshTokens RefreshToken[]
+}
+
+model RefreshToken {
+  id        String    @id @default(cuid())
+  tokenHash String    @unique
+  userId    String
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, expiresAt])
 }
 
 model Department {
