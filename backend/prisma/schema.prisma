@@ -1,13 +1,89 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
-
-// Get a free hosted Postgres database in seconds: `npx create-db`
-
 generator client {
   provider = "prisma-client"
-  output   = "../generated/prisma"
+  output   = "../src/generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  HR_MANAGER
+}
+
+enum EmploymentStatus {
+  ACTIVE
+  INACTIVE
+  TERMINATED
+}
+
+model User {
+  id           String           @id @default(cuid())
+  email        String           @unique
+  passwordHash String
+  role         Role             @default(HR_MANAGER)
+  createdAt    DateTime         @default(now())
+  updatedAt    DateTime         @updatedAt
+  salaryChanges SalaryAuditLog[]
+}
+
+model Employee {
+  id               String           @id @default(cuid())
+  employeeCode     String           @unique
+  firstName        String
+  lastName         String
+  email            String           @unique
+  department       String
+  designation      String
+  country          String
+  employmentStatus EmploymentStatus @default(ACTIVE)
+  joiningDate      DateTime
+  createdAt        DateTime         @default(now())
+  updatedAt        DateTime         @updatedAt
+
+  salaries         Salary[]
+  salaryAuditLogs  SalaryAuditLog[]
+
+  @@index([department])
+  @@index([country])
+  @@index([designation])
+  @@index([employmentStatus])
+}
+
+model Salary {
+  id          String   @id @default(cuid())
+  employeeId  String
+  amount      Decimal  @db.Decimal(18, 2)
+  currency    String   @db.VarChar(3)
+  effectiveFrom DateTime @db.Date
+  effectiveTo   DateTime? @db.Date
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  employee    Employee         @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  auditLogs   SalaryAuditLog[]
+
+  @@index([employeeId, effectiveFrom, effectiveTo])
+  @@index([currency])
+}
+
+model SalaryAuditLog {
+  id             String   @id @default(cuid())
+  employeeId     String
+  salaryId       String
+  changedById    String
+  previousAmount Decimal? @db.Decimal(18, 2)
+  previousCurrency String? @db.VarChar(3)
+  newAmount      Decimal  @db.Decimal(18, 2)
+  newCurrency    String   @db.VarChar(3)
+  effectiveFrom  DateTime @db.Date
+  reason         String
+  createdAt      DateTime @default(now())
+
+  employee       Employee @relation(fields: [employeeId], references: [id], onDelete: Restrict)
+  salary         Salary   @relation(fields: [salaryId], references: [id], onDelete: Restrict)
+  changedBy      User     @relation(fields: [changedById], references: [id], onDelete: Restrict)
+
+  @@index([employeeId, createdAt])
+  @@index([salaryId])
 }
