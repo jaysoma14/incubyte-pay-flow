@@ -112,9 +112,10 @@ export const openApiDocument = {
       },
       SalaryOverviewRow: {
         type: "object",
-        required: ["employeeId", "employeeName", "email", "department", "designation", "country", "salary", "lastUpdatedAt"],
+        required: ["employeeRecordId", "employeeId", "employeeName", "email", "department", "designation", "country", "salary", "lastUpdatedAt"],
         properties: {
           employeeId: { type: "string" },
+          employeeRecordId: { type: "string", description: "Employee database ID for employee-specific routes." },
           employeeName: { type: "string" },
           email: { type: "string", format: "email" },
           department: { type: "string" },

@@ -7,6 +7,7 @@ import { salaryOverviewQuerySchema } from "./salary.schema";
 export type SalaryOverviewQuery = z.output<typeof salaryOverviewQuerySchema>;
 
 export interface SalaryOverviewRow {
+  employeeRecordId: string;
   employeeId: string;
   employeeName: string;
   email: string;
@@ -100,6 +101,7 @@ export async function salaryOverview(query: SalaryOverviewQuery) {
   const [rows, countRows] = await Promise.all([
     prisma.$queryRaw<SalaryOverviewRow[]>(Prisma.sql`
       SELECT
+        e."id" AS "employeeRecordId",
         e."employeeCode" AS "employeeId",
         e."firstName" || ' ' || e."lastName" AS "employeeName",
         e."email" AS "email",

@@ -1,184 +1,363 @@
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+.app-shell {
+  min-height: 100vh;
 }
 
-.hero {
-  position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg)
-      scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg)
-      scale(0.8);
-  }
+.topbar.MuiAppBar-root {
+  z-index: 1201;
+  color: #20253b;
+  background: rgba(255, 255, 255, 0.94);
+  border-bottom: 1px solid #e8eaf1;
+  backdrop-filter: blur(14px);
 }
 
-#center {
+.topbar-toolbar.MuiToolbar-root {
+  min-height: 68px;
+  padding-inline: 28px;
+}
+
+.desktop-nav .MuiDrawer-paper {
+  z-index: 1200;
+  width: 250px;
+  border: 0;
+  border-right: 1px solid #e8eaf1;
+  background: #fff;
+}
+
+.sidebar-content {
   display: flex;
+  height: 100%;
   flex-direction: column;
-  gap: 25px;
-  place-content: center;
+  padding: 22px 16px 18px;
+}
+
+.brand,
+.login-brand {
+  display: flex;
+  align-items: center;
+  gap: 11px;
+}
+
+.brand {
+  padding: 2px 9px 31px;
+}
+
+.brand-mark {
+  display: grid;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
   place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
+  border-radius: 12px;
+  color: white;
+  background: linear-gradient(145deg, #647aff, #3f55df);
+  font-size: 19px;
+  font-weight: 800;
+  box-shadow: 0 6px 12px rgba(66, 91, 232, 0.22);
 }
 
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
-    flex-direction: column;
-    text-align: center;
-  }
+.nav-caption {
+  padding: 0 11px 9px;
+  color: #9aa0b1;
+  font-size: 10px;
+  font-weight: 750;
+  letter-spacing: 0.12em;
 }
 
-#docs {
-  border-right: 1px solid var(--border);
-
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
-  }
+.nav-list {
+  padding: 0 !important;
 }
 
-#next-steps ul {
-  list-style: none;
-  padding: 0;
-  display: flex;
+.nav-item.MuiListItemButton-root {
+  min-height: 44px;
+  margin: 3px 0;
+  padding-inline: 11px;
+  border-radius: 9px;
+  color: #697087;
+  font-size: 13px;
+}
+
+.nav-item .MuiListItemIcon-root {
+  min-width: 37px;
+  color: #858ba0;
+}
+
+.nav-item.active.MuiListItemButton-root {
+  color: #425be8;
+  background: #eef0ff;
+  font-weight: 700;
+}
+
+.nav-item.active .MuiListItemIcon-root {
+  color: #425be8;
+}
+
+.sidebar-footer {
+  margin-top: auto;
+  padding: 9px;
+  line-height: 1.8;
+}
+
+.main-content {
+  min-width: 0;
+  min-height: 100vh;
+  margin-left: 250px;
+}
+
+.main-toolbar-spacer.MuiToolbar-root {
+  min-height: 68px;
+}
+
+.page-content {
+  width: min(100%, 1600px);
+  margin: 0 auto;
+  padding: 34px 38px 54px;
+}
+
+.page-header {
+  margin-bottom: 2px;
+}
+
+.account-button.MuiButton-root {
+  min-width: 0;
   gap: 8px;
-  margin: 32px 0 0;
-
-  .logo {
-    height: 18px;
-  }
-
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
-  }
-
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
-
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
-
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
-  }
+  padding: 4px 8px 4px 4px;
+  color: #51586e;
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
-  }
+.account-avatar.MuiAvatar-root {
+  width: 33px;
+  height: 33px;
+  color: #425be8;
+  background: #eef0ff;
+  font-size: 13px;
+  font-weight: 700;
 }
 
-.ticks {
-  position: relative;
+.account-email {
+  max-width: 240px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.mobile-menu.MuiIconButton-root {
+  display: none;
+}
+
+.metric-card {
+  height: fit-content;
+}
+
+.chart-card {
+  height: 100%;
+}
+
+.metric-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border-radius: 12px;
+  color: #425be8;
+  background: #eef0ff;
+}
+
+.chart-card .MuiCardContent-root {
+  padding: 22px;
+}
+
+.table-card {
+  overflow: hidden;
+}
+
+.base-table {
   width: 100%;
+  min-width: 0;
+  color: #454c62;
+  font-size: 13px;
+}
 
-  &::before,
-  &::after {
-    content: '';
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+.base-table .ag-root-wrapper {
+  border: 0;
+}
+
+.base-table .ag-header-cell-text {
+  font-size: 11px;
+  letter-spacing: 0.035em;
+}
+
+.base-table .ag-cell {
+  line-height: 52px;
+}
+
+.grid-person {
+  display: flex;
+  min-height: 100%;
+  flex-direction: column;
+  justify-content: center;
+  gap: 3px;
+  padding-block: 5px;
+  line-height: 1.3;
+}
+
+.grid-person strong {
+  color: #343a50;
+  font-weight: 650;
+}
+
+.grid-person small {
+  color: #7a8092;
+  font-size: 11px;
+}
+
+.grid-link {
+  width: fit-content;
+  color: #425be8;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.grid-link:hover {
+  text-decoration: underline;
+}
+
+.grid-actions {
+  display: flex;
+  height: 100%;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 2px;
+}
+
+.muted-cell {
+  color: #858b9d;
+}
+
+.table-footer {
+  display: flex;
+  min-height: 58px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 8px 18px;
+  border-top: 1px solid #eceef3;
+}
+
+.table-footer .MuiStack-root {
+  margin-left: auto;
+}
+
+.empty-state {
+  padding: 34px 20px;
+  text-align: center;
+}
+
+.detail-grid {
+  display: grid;
+  grid-template-columns: minmax(110px, 0.8fr) minmax(0, 1.4fr);
+  gap: 16px 20px;
+  align-items: center;
+  font-size: 14px;
+}
+
+.detail-grid > span {
+  color: #7a8092;
+}
+
+.detail-grid > strong {
+  overflow-wrap: anywhere;
+  color: #343a50;
+  font-weight: 600;
+}
+
+.status-chip {
+  text-transform: capitalize;
+}
+
+.clear-filter.MuiButton-root {
+  height: 40px;
+}
+
+.employee-link.MuiButton-root {
+  min-width: 0;
+  padding: 0;
+  color: #425be8;
+  text-align: left;
+}
+
+.inline-action {
+  padding: 2px 8px;
+  border: 0;
+  color: #425be8;
+  background: transparent;
+  cursor: pointer;
+  font-weight: 700;
+}
+
+.login-page {
+  display: flex;
+  min-height: 100vh;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 28px;
+  background:
+    radial-gradient(ellipse at 18% 0%, rgba(86, 109, 255, 0.1), transparent 35%),
+    radial-gradient(ellipse at 100% 100%, rgba(22, 169, 138, 0.08), transparent 36%),
+    #f6f7fb;
+}
+
+.login-brand {
+  margin-bottom: 25px;
+}
+
+.login-card {
+  width: min(100%, 440px);
+}
+
+.login-card .MuiCardContent-root {
+  padding: 34px;
+}
+
+@media (max-width: 899px) {
+  .main-content {
+    margin-left: 0;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  .mobile-menu.MuiIconButton-root {
+    display: inline-flex;
+    margin-right: 10px;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  .topbar-toolbar.MuiToolbar-root {
+    padding-inline: 14px;
+  }
+
+  .page-content {
+    padding: 27px 20px 42px;
+  }
+}
+
+@media (max-width: 600px) {
+  .page-content {
+    padding: 22px 14px 34px;
+  }
+
+  .table-footer {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 5px;
+  }
+
+  .table-footer .MuiStack-root {
+    width: 100%;
+    margin: 0;
+  }
+
+  .account-email {
+    display: none;
+  }
+
+  .login-card .MuiCardContent-root {
+    padding: 26px 22px;
   }
 }

@@ -76,6 +76,7 @@ Base URL:
 | Method | Endpoint | Description |
 |---|---|---|
 | POST | `/auth/login` | HR Manager login |
+| POST | `/auth/refresh` | Rotate refresh token and issue a new access token |
 | POST | `/auth/logout` | Logout |
 | GET | `/auth/me` | Current authenticated user |
 
@@ -83,6 +84,7 @@ Base URL:
 
 | Method | Endpoint | Description |
 |---|---|---|
+| GET | `/departments` | List departments for employee forms |
 | GET | `/employees` | List employees |
 | GET | `/employees/:id` | Employee details |
 | POST | `/employees` | Create employee |
@@ -140,6 +142,7 @@ Example response:
 {
   "data": [
     {
+      "employeeRecordId": "employee-database-id",
       "employeeId": "EMP-1001",
       "employeeName": "John Smith",
       "email": "john@example.com",
@@ -166,6 +169,7 @@ Example response:
 ```
 
 For employees without an applicable salary, `salary` and `lastUpdatedAt` may be `null`.
+`employeeRecordId` is the employee's database ID for employee-specific routes; `employeeId` remains the human-readable employee code.
 
 The total count represents employees matching the employee-level filters, including employees without an applicable salary. Salary-specific filters should return only employees whose applicable salary satisfies those filters.
 
@@ -351,8 +355,10 @@ Validate and normalize query parameters before passing them to Prisma.
 - Issue JWTs after successful authentication.
 - Store JWTs in HTTP-only cookies.
 - Configure Secure and SameSite cookie attributes appropriately.
+- Restrict credentialed CORS and state-changing request origins to configured frontend origins.
 - Protect routes with authentication middleware.
 - Verify the user's role on protected endpoints.
+- Issue short-lived access JWTs and rotate single-use opaque refresh tokens stored hashed in the database.
 - Configure CORS for the frontend origin and credentials.
 - Never expose password hashes.
 - Avoid logging credentials or authentication tokens.
@@ -419,3 +425,28 @@ Test:
 - Transactional audit-log creation.
 - Dashboard currency-aware metrics.
 - CSV export filters.
+
+## 14. Running the API
+
+From `backend/`, configure `DATABASE_URL`, `JWT_SECRET` (at least 32 characters),
+`FRONTEND_URL`, and `PORT` in the environment. Apply database migrations, then
+start the development server with `npm run dev`. Build and start the production
+server with `npm run build` and `npm start`.
+
+The interactive OpenAPI UI is available at `/api-docs`; the JSON document is
+available at `/api-docs.json`. All `/api` endpoints except login and logout
+require the `payflow_token` HTTP-only cookie returned by login. CORS allows the
+comma-separated origins in `FRONTEND_URL` and credentials.
+
+Login also sets a `payflow_refresh_token` HTTP-only cookie scoped to `/api/auth`.
+Call `POST /api/auth/refresh` with cookies enabled to rotate the refresh token
+and receive new access and refresh cookies. Refresh tokens expire after
+`REFRESH_TOKEN_EXPIRES_DAYS` (30 days by default, maximum 365), are stored only
+as SHA-256 hashes, and can be used once. Logout revokes the presented refresh
+token and clears both cookies. Apply the refresh-token migration before starting
+the updated API.
+
+Employee create/update requests reference the department by `departmentId`.
+Salary create requests provide a decimal string, ISO 4217 currency code,
+`effectiveFrom` date, and change reason. Salary range filters accept decimal
+strings and are compared using PostgreSQL numeric values.
