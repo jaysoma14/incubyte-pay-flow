@@ -30,6 +30,7 @@ build/
 frontend/.vite/
 frontend/coverage/
 frontend/.eslintcache
+frontend/.env
 
 # ==========================================
 # Backend - Node.js / Express
@@ -39,13 +40,25 @@ backend/coverage/
 backend/.eslintcache
 backend/logs/
 backend/tmp/
+backend/.env
 
 # ==========================================
 # Prisma
 # ==========================================
 
 # Do not ignore prisma/schema.prisma or migrations.
-# Generated Prisma client is generally inside node_modules.
+
+# Generated Prisma client (if generated outside node_modules)
+backend/src/generated/prisma/
+backend/generated/prisma/
+
+# Prisma local development database
+backend/prisma/*.db
+backend/prisma/*.sqlite
+backend/prisma/*.sqlite3
+
+# Prisma temporary files
+backend/prisma/.temp/
 
 # ==========================================
 # Testing
