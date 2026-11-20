@@ -216,13 +216,22 @@ Audit endpoints are read-only through the application.
 - firstName
 - lastName
 - email
-- department
+- departmentId
 - designation
 - country
 - employmentStatus
 - joiningDate
 - createdAt
 - updatedAt
+
+### Department
+
+- id
+- name
+- createdAt
+- updatedAt
+
+Each employee belongs to one department. Department names are unique and seeded as standalone records.
 
 ### Salary
 
@@ -365,6 +374,10 @@ Requirements:
 - Create an initial HR Manager account using environment-configured credentials.
 
 Do not use real employee or personal information.
+
+Run the seed script with `npm run db:seed` after applying migrations. Set
+`SEED_HR_MANAGER_EMAIL` and `SEED_HR_MANAGER_PASSWORD` in the environment; the
+password must be at least 12 characters and is stored as a bcrypt hash.
 
 ## 11. Error Handling
 

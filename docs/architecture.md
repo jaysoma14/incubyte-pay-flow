@@ -99,6 +99,9 @@ Stores HR Manager authentication information.
 ### Employee
 Stores employee profile and organizational information.
 
+### Department
+Stores department names referenced by employees.
+
 ### Salary
 Stores salary records and effective periods. Multiple salary records can belong to one employee to preserve salary history.
 
@@ -124,6 +127,11 @@ Salary
   |
   | 1
 Employee
+  |
+  | N
+  |
+  | 1
+Department
 ```
 
 The actual Prisma schema and relationship details are maintained in `backend-design.md`.
