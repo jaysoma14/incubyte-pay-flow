@@ -5,16 +5,25 @@ import { prisma } from "../../lib/prisma";
 export const dashboardRouter = Router();
 
 dashboardRouter.get("/summary", async (_request, response) => {
-  const [employeeCount, payrollByCurrency] = await Promise.all([
+  const [
+    employeeCount,
+    activeEmployeeCount,
+    inactiveEmployeeCount,
+    payrollByCurrency,
+  ] = await Promise.all([
     prisma.employee.count(),
-    prisma.$queryRaw<Array<{
-      currency: string;
-      employeeCount: number;
-      totalPayroll: string;
-      averageSalary: string;
-      minimumSalary: string;
-      maximumSalary: string;
-    }>>(Prisma.sql`
+    prisma.employee.count({ where: { employmentStatus: "ACTIVE" } }),
+    prisma.employee.count({ where: { employmentStatus: "INACTIVE" } }),
+    prisma.$queryRaw<
+      Array<{
+        currency: string;
+        employeeCount: number;
+        totalPayroll: string;
+        averageSalary: string;
+        minimumSalary: string;
+        maximumSalary: string;
+      }>
+    >(Prisma.sql`
       SELECT
         s."currency" AS "currency",
         COUNT(*)::int AS "employeeCount",
@@ -31,11 +40,20 @@ dashboardRouter.get("/summary", async (_request, response) => {
       ORDER BY s."currency" ASC
     `),
   ]);
-  response.json({ data: { employeeCount, payrollByCurrency } });
+  response.json({
+    data: {
+      employeeCount,
+      activeEmployeeCount,
+      inactiveEmployeeCount,
+      payrollByCurrency,
+    },
+  });
 });
 
 dashboardRouter.get("/department-distribution", async (_request, response) => {
-  const data = await prisma.$queryRaw<Array<{ department: string; employeeCount: number }>>(Prisma.sql`
+  const data = await prisma.$queryRaw<
+    Array<{ department: string; employeeCount: number }>
+  >(Prisma.sql`
     SELECT d."name" AS "department", COUNT(e."id")::int AS "employeeCount"
     FROM "Department" d
     LEFT JOIN "Employee" e ON e."departmentId" = d."id"
@@ -52,19 +70,24 @@ dashboardRouter.get("/country-distribution", async (_request, response) => {
     orderBy: { country: "asc" },
   });
   response.json({
-    data: data.map(({ country, _count }) => ({ country, employeeCount: _count._all })),
+    data: data.map(({ country, _count }) => ({
+      country,
+      employeeCount: _count._all,
+    })),
   });
 });
 
 dashboardRouter.get("/salary-distribution", async (_request, response) => {
-  const data = await prisma.$queryRaw<Array<{
-    department: string;
-    designation: string;
-    currency: string;
-    employeeCount: number;
-    totalPayroll: string;
-    averageSalary: string;
-  }>>(Prisma.sql`
+  const data = await prisma.$queryRaw<
+    Array<{
+      department: string;
+      designation: string;
+      currency: string;
+      employeeCount: number;
+      totalPayroll: string;
+      averageSalary: string;
+    }>
+  >(Prisma.sql`
     SELECT
       d."name" AS "department",
       e."designation" AS "designation",

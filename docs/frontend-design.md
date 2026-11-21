@@ -38,6 +38,8 @@ src/
 │   ├── common/
 │   └── feedback/
 │
+├── constants/
+|
 ├── features/
 │   ├── auth/
 │   │   ├── pages/
@@ -253,7 +255,7 @@ This view is separate from the centralized current-salary overview.
 ## 11. Dashboard
 
 Display:
-- Employee count.
+- Employee count, Active Employee count, Inactive Employee count.
 - Payroll totals grouped by currency.
 - Average salary grouped by currency.
 - Minimum and maximum salary grouped by currency.
