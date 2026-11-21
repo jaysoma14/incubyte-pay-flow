@@ -80,8 +80,16 @@ export interface AuditLog {
   effectiveFrom: string;
   reason: string;
   createdAt: string;
-  employee: { id: string; employeeCode: string; firstName: string; lastName: string };
-  salary: Pick<SalaryRecord, "amount" | "currency" | "effectiveFrom" | "effectiveTo">;
+  employee: {
+    id: string;
+    employeeCode: string;
+    firstName: string;
+    lastName: string;
+  };
+  salary: Pick<
+    SalaryRecord,
+    "amount" | "currency" | "effectiveFrom" | "effectiveTo"
+  >;
   changedBy: { id: string; email: string };
 }
 
@@ -108,7 +116,15 @@ export interface EmployeeFilters {
   country?: string;
   designation?: string;
   employmentStatus?: Employee["employmentStatus"];
-  sortBy: "employeeCode" | "firstName" | "lastName" | "joiningDate" | "department" | "designation" | "country" | "createdAt";
+  sortBy:
+    | "employeeCode"
+    | "firstName"
+    | "lastName"
+    | "joiningDate"
+    | "department"
+    | "designation"
+    | "country"
+    | "createdAt";
   sortOrder: "asc" | "desc";
 }
 
@@ -121,6 +137,8 @@ export interface SalaryRevisionInput {
 
 export interface DashboardSummary {
   employeeCount: number;
+  inactiveEmployeeCount: number;
+  activeEmployeeCount: number;
   payrollByCurrency: Array<{
     currency: string;
     employeeCount: number;

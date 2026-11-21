@@ -10,6 +10,8 @@ import {
 import type { ReactNode } from "react";
 import type { ColDef } from "ag-grid-community";
 import GroupsOutlinedIcon from "@mui/icons-material/GroupsOutlined";
+import CheckCircleOutlinedIcon from "@mui/icons-material/CheckCircleOutlined";
+import CancelOutlinedIcon from "@mui/icons-material/CancelOutlined";
 import PaymentsOutlinedIcon from "@mui/icons-material/PaymentsOutlined";
 import {
   Bar,
@@ -163,11 +165,29 @@ export default function DashboardPage() {
         <>
           <Grid container spacing={2.5}>
             <Grid size={{ xs: 12, md: 4 }}>
-              <MetricCard
-                label="Total employees"
-                value={summary.data.data.employeeCount.toLocaleString()}
-                icon={<GroupsOutlinedIcon />}
-              />
+              <Grid container spacing={2.5}>
+                <Grid size={{ xs: 12 }}>
+                  <MetricCard
+                    label="Total employees"
+                    value={summary.data.data.employeeCount.toLocaleString()}
+                    icon={<GroupsOutlinedIcon />}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <MetricCard
+                    label="Active employees"
+                    value={summary.data.data.activeEmployeeCount.toLocaleString()}
+                    icon={<CheckCircleOutlinedIcon />}
+                  />
+                </Grid>
+                <Grid size={{ xs: 12 }}>
+                  <MetricCard
+                    label="Inactive employees"
+                    value={summary.data.data.inactiveEmployeeCount.toLocaleString()}
+                    icon={<CancelOutlinedIcon />}
+                  />
+                </Grid>
+              </Grid>
             </Grid>
             <Grid size={{ xs: 12, md: 8 }}>
               <Card>
