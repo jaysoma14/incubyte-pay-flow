@@ -1,11 +1,10 @@
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import {
   Alert,
   Button,
   Card,
   CardContent,
   Grid,
-  MenuItem,
   Stack,
   TextField,
   Typography,
@@ -14,8 +13,14 @@ import DownloadOutlinedIcon from "@mui/icons-material/DownloadOutlined";
 import { useGetDepartmentsQuery } from "@/api/departmentApi";
 import { downloadCsv } from "@/api/reportsApi";
 import { useNotify } from "@/components/feedback/useNotify";
-import { CountrySelect, PageHeader } from "@/components/common";
+import { PageHeader } from "@/components/common";
 import { getErrorMessage } from "@/utils/format";
+import {
+  FormControlCountrySelect,
+  FormControlCurrencySelect,
+  FormControlSelect,
+} from "@/components/formControls";
+import { employeeStatusOptions } from "@/constants/employee";
 
 type ExportFilters = {
   search: string;
@@ -82,6 +87,15 @@ function ReportsPage() {
     }
   };
 
+  const departmentOptions = useMemo(() => {
+    return [
+      ...(departments.data?.data.map((d) => ({
+        value: d.name,
+        label: d.name,
+      })) || []),
+    ];
+  }, [departments.data?.data]);
+
   return (
     <Stack spacing={2.5}>
       <PageHeader
@@ -111,30 +125,26 @@ function ReportsPage() {
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-              <TextField
-                select
-                fullWidth
-                size="small"
+              <FormControlSelect
                 label="Department"
+                size="small"
                 value={filters.department}
+                options={departmentOptions}
+                emptyOption="All departments"
                 onChange={(event) =>
                   setFilters({ ...filters, department: event.target.value })
                 }
-              >
-                <MenuItem value="">All departments</MenuItem>
-                {(departments.data?.data ?? []).map((department) => (
-                  <MenuItem key={department.id} value={department.name}>
-                    {department.name}
-                  </MenuItem>
-                ))}
-              </TextField>
+              />
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-              <CountrySelect
+              <FormControlCountrySelect
                 label="Country"
+                size="small"
                 value={filters.country}
                 emptyOption="All countries"
-                onChange={(country) => setFilters({ ...filters, country })}
+                onChange={({ target: { value } }) =>
+                  setFilters({ ...filters, country: value || "" })
+                }
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
@@ -149,38 +159,29 @@ function ReportsPage() {
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-              <TextField
-                select
-                fullWidth
+              <FormControlSelect
                 size="small"
                 label="Employee status"
                 value={filters.employmentStatus}
+                options={employeeStatusOptions}
+                emptyOption="All statuses"
                 onChange={(event) =>
                   setFilters({
                     ...filters,
                     employmentStatus: event.target.value,
                   })
                 }
-              >
-                <MenuItem value="">All statuses</MenuItem>
-                <MenuItem value="ACTIVE">Active</MenuItem>
-                <MenuItem value="INACTIVE">Inactive</MenuItem>
-                <MenuItem value="TERMINATED">Terminated</MenuItem>
-              </TextField>
+              />
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>
-              <TextField
-                fullWidth
-                size="small"
+              <FormControlCurrencySelect
                 label="Currency"
+                size="small"
                 value={filters.currency}
                 onChange={(event) =>
-                  setFilters({
-                    ...filters,
-                    currency: event.target.value.toUpperCase(),
-                  })
+                  setFilters({ ...filters, currency: event.target.value })
                 }
-                slotProps={{ htmlInput: { maxLength: 3 } }}
+                emptyOption="All currencies"
               />
             </Grid>
             <Grid size={{ xs: 12, sm: 6, md: 2 }}>

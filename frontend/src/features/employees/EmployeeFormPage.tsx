@@ -6,7 +6,6 @@ import {
   Card,
   CardContent,
   Grid,
-  MenuItem,
   Stack,
   TextField,
 } from "@mui/material";
@@ -18,15 +17,15 @@ import {
   useSaveEmployeeMutation,
 } from "@/api/employeeApi";
 import { useNotify } from "@/components/feedback/useNotify";
-import {
-  CountrySelect,
-  ErrorState,
-  LoadingState,
-  PageHeader,
-} from "@/components/common";
+import { ErrorState, LoadingState, PageHeader } from "@/components/common";
 import { employeeValidation } from "@/features/employees/employeeSchemas";
 import type { Employee } from "@/types";
 import { getErrorMessage } from "@/utils/format";
+import {
+  FormControlCountrySelect,
+  FormControlSelect,
+} from "@/components/formControls";
+import { employeeStatusOptions } from "@/constants/employee";
 
 type EmployeeValues = {
   employeeCode: string;
@@ -134,7 +133,6 @@ function EmployeeFormPage() {
               handleChange,
               handleBlur,
               handleSubmit,
-              setFieldValue,
               isSubmitting,
               status,
             }) => {
@@ -153,6 +151,16 @@ function EmployeeFormPage() {
                   onBlur={handleBlur}
                   error={Boolean(touched[name] && errors[name])}
                   helperText={touched[name] && errors[name]}
+                  required
+                  variant="outlined"
+                  slotProps={{
+                    input: {
+                      notched: type === "date",
+                    },
+                    inputLabel: {
+                      shrink: type === "date",
+                    },
+                  }}
                 />
               );
               return (
@@ -171,39 +179,35 @@ function EmployeeFormPage() {
                       {field("lastName", "Last name")}
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <TextField
-                        select
-                        fullWidth
+                      <FormControlSelect
                         name="departmentId"
                         label="Department"
                         value={values.departmentId}
+                        options={(departmentsQuery.data?.data ?? []).map(
+                          (department) => ({
+                            value: department.id,
+                            label: department.name,
+                          }),
+                        )}
                         onChange={handleChange}
                         onBlur={handleBlur}
                         error={Boolean(
                           touched.departmentId && errors.departmentId,
                         )}
+                        size="medium"
+                        required
                         helperText={touched.departmentId && errors.departmentId}
-                      >
-                        {(departmentsQuery.data?.data ?? []).map(
-                          (department) => (
-                            <MenuItem key={department.id} value={department.id}>
-                              {department.name}
-                            </MenuItem>
-                          ),
-                        )}
-                      </TextField>
+                      />
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}>
                       {field("designation", "Designation")}
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <CountrySelect
+                      <FormControlCountrySelect
                         name="country"
                         label="Country"
                         value={values.country}
-                        onChange={(value) =>
-                          void setFieldValue("country", value)
-                        }
+                        onChange={handleChange}
                         onBlur={handleBlur}
                         error={Boolean(touched.country && errors.country)}
                         helperText={touched.country && errors.country}
@@ -214,19 +218,16 @@ function EmployeeFormPage() {
                       {field("joiningDate", "Joining date", "date")}
                     </Grid>
                     <Grid size={{ xs: 12, sm: 6 }}>
-                      <TextField
-                        select
-                        fullWidth
+                      <FormControlSelect
                         name="employmentStatus"
                         label="Employment status"
                         value={values.employmentStatus}
+                        options={employeeStatusOptions}
                         onChange={handleChange}
                         onBlur={handleBlur}
-                      >
-                        <MenuItem value="ACTIVE">Active</MenuItem>
-                        <MenuItem value="INACTIVE">Inactive</MenuItem>
-                        <MenuItem value="TERMINATED">Terminated</MenuItem>
-                      </TextField>
+                        required
+                        size="medium"
+                      />
                     </Grid>
                     {status && (
                       <Grid size={12}>

@@ -21,6 +21,7 @@ import {
   LoadingState,
   PageHeader,
 } from "@/components/common";
+import { FormControlCurrencySelect } from "@/components/formControls";
 import { salaryRevisionValidation } from "@/features/salaries/salarySchemas";
 import { formatDate, formatMoney, getErrorMessage } from "@/utils/format";
 
@@ -121,6 +122,7 @@ function SalaryRevisionPage() {
                   handleChange,
                   handleBlur,
                   handleSubmit,
+                  setFieldValue,
                   isSubmitting,
                   status,
                 }) => {
@@ -159,7 +161,23 @@ function SalaryRevisionPage() {
                           {field("amount", "Salary amount", "number")}
                         </Grid>
                         <Grid size={{ xs: 12, sm: 6 }}>
-                          {field("currency", "Currency (ISO 4217)")}
+                          <FormControlCurrencySelect
+                            name="currency"
+                            label="Currency (ISO 4217)"
+                            value={values.currency}
+                            onChange={(event) =>
+                              void setFieldValue(
+                                "currency",
+                                event.target.value,
+                              )
+                            }
+                            onBlur={handleBlur}
+                            error={Boolean(
+                              touched.currency && errors.currency,
+                            )}
+                            helperText={touched.currency && errors.currency}
+                            required
+                          />
                         </Grid>
                         <Grid size={12}>
                           {field("effectiveFrom", "Effective from", "date")}

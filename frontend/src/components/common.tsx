@@ -2,7 +2,6 @@ import { Alert, Box, CircularProgress, Pagination, Stack, Typography } from "@mu
 import type { ReactNode } from "react";
 import { getErrorMessage } from "../utils/format";
 export { BaseTable } from "./common/BaseTable";
-export { CountrySelect } from "./common/CountrySelect";
 
 export function PageHeader({ title, description, actions }: { title: string; description?: string; actions?: ReactNode }) {
   return (

@@ -1,4 +1,4 @@
-import { Box } from "@mui/material";
+import { Box, TablePagination } from "@mui/material";
 import {
   AllCommunityModule,
   ModuleRegistry,
@@ -35,6 +35,20 @@ export interface BaseTableProps<TData> {
   height?: number | string;
   getRowId?: GridOptions<TData>["getRowId"];
   onSortChanged?: (sort: SortModelItem | null) => void;
+  paginationMeta?: {
+    page: number;
+    total: number;
+    limit: number;
+    totalPages: number;
+  };
+  onChangePage?: (
+    event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number,
+  ) => void;
+  onChangeRowsPerPage?: (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => void;
+  isLoading?: boolean;
 }
 
 export function BaseTable<TData>({
@@ -45,35 +59,62 @@ export function BaseTable<TData>({
   height = 460,
   getRowId,
   onSortChanged,
+  paginationMeta,
+  onChangePage,
+  onChangeRowsPerPage,
+  isLoading = false
 }: BaseTableProps<TData>) {
   const handleSortChanged = (event: SortChangedEvent<TData>) => {
     if (!onSortChanged) return;
     const activeSort = event.api.getColumnState().find((column) => column.sort);
-    onSortChanged(activeSort ? { colId: activeSort.colId, sort: activeSort.sort! } : null);
+    onSortChanged(
+      activeSort ? { colId: activeSort.colId, sort: activeSort.sort! } : null,
+    );
   };
 
   const style: CSSProperties = { height };
 
   return (
-    <Box className="base-table" role="region" aria-label={ariaLabel} style={style}>
-      <AgGridReact<TData>
-        theme={tableTheme}
-        rowData={rows}
-        columnDefs={columns}
-        defaultColDef={{
-          flex: 1,
-          minWidth: 120,
-          sortable: false,
-          resizable: true,
-        }}
-        getRowId={getRowId}
-        onSortChanged={handleSortChanged}
-        animateRows={false}
-        rowHeight={56}
-        headerHeight={48}
-        suppressCellFocus
-        localeText={{ noRowsToShow: emptyMessage }}
-      />
-    </Box>
+    <>
+      <Box
+        className="base-table"
+        role="region"
+        aria-label={ariaLabel}
+        style={style}
+      >
+        <AgGridReact<TData>
+          theme={tableTheme}
+          rowData={rows}
+          columnDefs={columns}
+          defaultColDef={{
+            flex: 1,
+            minWidth: 120,
+            sortable: false,
+            resizable: true,
+          }}
+          getRowId={getRowId}
+          onSortChanged={handleSortChanged}
+          animateRows={false}
+          rowHeight={56}
+          headerHeight={48}
+          suppressCellFocus
+          localeText={{ noRowsToShow: emptyMessage }}
+          loading={isLoading}
+        />
+      </Box>
+      {paginationMeta && onChangePage && (
+        <Box className="table-footer">
+          <div></div>
+          <TablePagination
+            component="div"
+            count={paginationMeta.total}
+            page={paginationMeta.page - 1}
+            onPageChange={onChangePage}
+            rowsPerPage={paginationMeta.limit}
+            onRowsPerPageChange={onChangeRowsPerPage}
+          />
+        </Box>
+      )}
+    </>
   );
 }

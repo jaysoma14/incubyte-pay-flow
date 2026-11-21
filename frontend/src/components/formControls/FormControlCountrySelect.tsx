@@ -1,6 +1,6 @@
 import { getData } from "country-list";
-import { MenuItem, TextField } from "@mui/material";
-import type { FocusEventHandler, ReactNode } from "react";
+import { useMemo, type FocusEventHandler, type ReactNode } from "react";
+import { FormControlSelect } from "./FormControlSelect";
 
 const countryNameOverrides: Record<string, string> = {
   AE: "United Arab Emirates",
@@ -18,7 +18,7 @@ const countryOptions = getData()
 type CountrySelectProps = {
   label: string;
   value: string;
-  onChange: (value: string) => void;
+  onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   name?: string;
   onBlur?: FocusEventHandler<HTMLInputElement | HTMLTextAreaElement>;
   error?: boolean;
@@ -28,7 +28,7 @@ type CountrySelectProps = {
   emptyOption?: string;
 };
 
-export function CountrySelect({
+export function FormControlCountrySelect({
   label,
   value,
   onChange,
@@ -37,34 +37,34 @@ export function CountrySelect({
   error,
   helperText,
   required,
-  size = "small",
+  size = "medium",
   emptyOption,
 }: CountrySelectProps) {
   const hasCurrentValue = countryOptions.some(
     (country) => country.value === value,
   );
 
+  const availableOptions = useMemo(
+    () =>
+      value && !hasCurrentValue
+        ? [{ label: value, value }, ...countryOptions]
+        : countryOptions,
+    [value, hasCurrentValue],
+  );
+
   return (
-    <TextField
-      select
-      fullWidth
+    <FormControlSelect
       size={size}
       name={name}
       label={label}
       value={value}
-      onChange={(event) => onChange(event.target.value)}
+      options={availableOptions}
+      onChange={onChange}
       onBlur={onBlur}
       error={error}
       helperText={helperText}
       required={required}
-    >
-      {emptyOption && <MenuItem value="">{emptyOption}</MenuItem>}
-      {value && !hasCurrentValue && <MenuItem value={value}>{value}</MenuItem>}
-      {countryOptions.map((country) => (
-        <MenuItem key={country.value} value={country.value}>
-          {country.label}
-        </MenuItem>
-      ))}
-    </TextField>
+      emptyOption={emptyOption}
+    />
   );
 }

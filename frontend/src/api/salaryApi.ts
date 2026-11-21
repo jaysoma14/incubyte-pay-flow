@@ -13,15 +13,25 @@ import { dashboardApi } from "./dashboardApi";
 export const salaryApi = createAppApi({
   reducerPath: "salaryApi",
   endpoints: (builder) => ({
-    getSalaryOverview: builder.query<PageResult<SalaryOverviewRow>, SalaryFilters>({
+    getSalaryOverview: builder.query<
+      PageResult<SalaryOverviewRow>,
+      SalaryFilters
+    >({
       query: (filters) => `/salaries?${queryString(filters)}`,
       providesTags: ["Salary"],
     }),
-    getSalaryHistory: builder.query<PageResult<SalaryRecord>, { id: string; page: number; limit: number }>({
-      query: ({ id, ...pagination }) => `/employees/${encodeURIComponent(id)}/salaries?${queryString(pagination)}`,
+    getSalaryHistory: builder.query<
+      PageResult<SalaryRecord>,
+      { id: string; page: number; limit: number }
+    >({
+      query: ({ id, ...pagination }) =>
+        `/employees/${encodeURIComponent(id)}/salaries?${queryString(pagination)}`,
       providesTags: (_result, _error, { id }) => [{ type: "Salary", id }],
     }),
-    reviseSalary: builder.mutation<{ data: { salary: SalaryRecord; auditLog: AuditLog } }, { id: string; body: SalaryRevisionInput }>({
+    reviseSalary: builder.mutation<
+      { data: { salary: SalaryRecord; auditLog: AuditLog } },
+      { id: string; body: SalaryRevisionInput }
+    >({
       query: ({ id, body }) => ({
         url: `/employees/${encodeURIComponent(id)}/salaries`,
         method: "POST",
@@ -42,4 +52,8 @@ export const salaryApi = createAppApi({
   tagTypes: ["Salary"],
 });
 
-export const { useGetSalaryOverviewQuery, useGetSalaryHistoryQuery, useReviseSalaryMutation } = salaryApi;
+export const {
+  useGetSalaryOverviewQuery,
+  useGetSalaryHistoryQuery,
+  useReviseSalaryMutation,
+} = salaryApi;

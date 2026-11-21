@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link as RouterLink } from "react-router-dom";
-import { Box, Button, Card, Stack, Typography } from "@mui/material";
+import { Button, Card, Stack } from "@mui/material";
 import type { ColDef } from "ag-grid-community";
 import {
   useGetAuditLogsQuery,
@@ -11,20 +11,18 @@ import {
   ErrorState,
   LoadingState,
   PageHeader,
-  ServerPagination,
 } from "@/components/common";
 import { formatDate, formatMoney } from "@/utils/format";
 import type { AuditLog } from "@/types";
 
 function AuditLogsPage({ employeeId }: { employeeId?: string }) {
-  const [page, setPage] = useState(1);
-  const pageSize = 25;
+  const [pagination, setPagination] = useState({ page: 1, limit: 25 });
   const globalQuery = useGetAuditLogsQuery(
-    { page, limit: pageSize },
+    { page: pagination.page, limit: pagination.limit },
     { skip: Boolean(employeeId) },
   );
   const employeeQuery = useGetEmployeeAuditLogsQuery(
-    { id: employeeId ?? "", page, limit: pageSize },
+    { id: employeeId ?? "", page: pagination.page, limit: pagination.limit },
     { skip: !employeeId },
   );
   const query = employeeId ? employeeQuery : globalQuery;
@@ -84,6 +82,20 @@ function AuditLogsPage({ employeeId }: { employeeId?: string }) {
     { field: "changedBy.email", headerName: "Changed by", minWidth: 190 },
   ];
 
+  const handleChangePage = (
+    _event: React.MouseEvent<HTMLButtonElement> | null,
+    page: number,
+  ) => {
+    setPagination((current) => ({ ...current, page: page + 1 }));
+  };
+
+  const handleChangeRowsPerPage = (
+    event: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>,
+  ) => {
+    const limit = parseInt(event.target.value, 10);
+    setPagination((current) => ({ ...current, page: 1, limit }));
+  };
+
   return (
     <Stack spacing={2.5}>
       <PageHeader
@@ -117,19 +129,11 @@ function AuditLogsPage({ employeeId }: { employeeId?: string }) {
             columns={auditColumns}
             emptyMessage="No salary audit entries have been recorded."
             getRowId={({ data }) => data.id}
+            paginationMeta={query.data?.pagination}
+            onChangePage={handleChangePage}
+            onChangeRowsPerPage={handleChangeRowsPerPage}
+            isLoading={query.isFetching}
           />
-          {query.data && (
-            <Box className="table-footer">
-              <Typography variant="body2" color="text.secondary">
-                {query.data.pagination.total.toLocaleString()} changes recorded
-              </Typography>
-              <ServerPagination
-                page={page}
-                totalPages={query.data.pagination.totalPages}
-                onChange={setPage}
-              />
-            </Box>
-          )}
         </Card>
       )}
     </Stack>

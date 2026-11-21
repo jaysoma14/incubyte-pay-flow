@@ -349,6 +349,7 @@ export default function DashboardPage() {
                   getRowId={({ data }) =>
                     `${data.department}-${data.designation}-${data.currency}`
                   }
+                  isLoading={salaryMix.isFetching}
                 />
               )}
             </CardContent>

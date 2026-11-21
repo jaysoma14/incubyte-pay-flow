@@ -190,6 +190,10 @@
   line-height: 52px;
 }
 
+.base-table .ag-cell-value {
+  white-space: nowrap;
+}
+
 .grid-person {
   display: flex;
   min-height: 100%;
